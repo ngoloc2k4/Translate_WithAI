@@ -114,6 +114,10 @@ export async function translateWithGemini(
       }
     );
     
+    if (!response.ok) {
+      throw new Error(`Gemini API returned status ${response.status}`);
+    }
+    
     const data = await response.json();
     const result = data.candidates?.[0]?.content?.parts?.[0]?.text || baseTranslation;
     
@@ -170,6 +174,10 @@ export async function translateWithOpenRouter(
       }),
     });
     
+    if (!response.ok) {
+      throw new Error(`OpenRouter API returned status ${response.status}`);
+    }
+    
     const data = await response.json();
     const result = data.choices?.[0]?.message?.content || baseTranslation;
     
@@ -225,6 +233,10 @@ export async function translateWithNvidia(
         max_tokens: 2048,
       }),
     });
+    
+    if (!response.ok) {
+      throw new Error(`Nvidia API returned status ${response.status}`);
+    }
     
     const data = await response.json();
     const result = data.choices?.[0]?.message?.content || baseTranslation;

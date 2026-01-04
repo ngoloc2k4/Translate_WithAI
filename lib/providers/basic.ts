@@ -9,6 +9,11 @@ export async function translateWithGoogle(
     const response = await fetch(
       `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${sourceLang}|${targetLang}`
     );
+    
+    if (!response.ok) {
+      throw new Error(`MyMemory API returned status ${response.status}`);
+    }
+    
     const data = await response.json();
     return data.responseData?.translatedText || text;
   } catch (error) {
@@ -37,6 +42,10 @@ export async function translateWithDeepL(
         target_lang: targetLang.toUpperCase(),
       }),
     });
+    
+    if (!response.ok) {
+      throw new Error(`DeepL API returned status ${response.status}`);
+    }
     
     const data = await response.json();
     return data.translations?.[0]?.text || text;

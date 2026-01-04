@@ -99,43 +99,53 @@ export default function Home() {
         }),
       });
 
+      if (!response.ok) {
+        const errorText = await response.text();
+        let errorMessage = 'Translation failed';
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.error || errorMessage;
+        } catch {
+          errorMessage = errorText || errorMessage;
+        }
+        alert(`Error: ${errorMessage}`);
+        setBasicLoading(false);
+        return;
+      }
+
       const data = await response.json();
 
-      if (response.ok) {
-        setBasicTranslation(data.basicTranslation);
-        setBasicLoading(false);
+      setBasicTranslation(data.basicTranslation);
+      setBasicLoading(false);
 
-        if (isSourceFocus) {
-          setTargetText(data.basicTranslation);
-        } else {
-          setSourceText(data.basicTranslation);
-        }
-
-        if (data.aiTranslations) {
-          setAiTranslations(data.aiTranslations);
-        }
-
-        if (data.insights && data.insights.length > 0) {
-          setInsights(data.insights);
-        }
-
-        // Add to history
-        const historyEntry = addToHistory({
-          sourceText: isSourceFocus ? textToTranslate : data.basicTranslation,
-          translatedText: isSourceFocus ? data.basicTranslation : textToTranslate,
-          sourceLanguage: isSourceFocus ? sourceLanguage : targetLanguage,
-          targetLanguage: isSourceFocus ? targetLanguage : sourceLanguage,
-          mode,
-          tone,
-          timestamp: new Date().toISOString(),
-          basicProvider,
-          aiProvider,
-        });
-
-        setHistory([historyEntry, ...history]);
+      if (isSourceFocus) {
+        setTargetText(data.basicTranslation);
       } else {
-        alert(`Error: ${data.error}`);
+        setSourceText(data.basicTranslation);
       }
+
+      if (data.aiTranslations) {
+        setAiTranslations(data.aiTranslations);
+      }
+
+      if (data.insights && data.insights.length > 0) {
+        setInsights(data.insights);
+      }
+
+      // Add to history
+      const historyEntry = addToHistory({
+        sourceText: isSourceFocus ? textToTranslate : data.basicTranslation,
+        translatedText: isSourceFocus ? data.basicTranslation : textToTranslate,
+        sourceLanguage: isSourceFocus ? sourceLanguage : targetLanguage,
+        targetLanguage: isSourceFocus ? targetLanguage : sourceLanguage,
+        mode,
+        tone,
+        timestamp: new Date().toISOString(),
+        basicProvider,
+        aiProvider,
+      });
+
+      setHistory([historyEntry, ...history]);
     } catch (error) {
       alert(`Failed to translate: ${error}`);
     } finally {
