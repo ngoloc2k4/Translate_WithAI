@@ -11,7 +11,7 @@ export async function translateWithGoogle(
     );
     
     if (!response.ok) {
-      throw new Error(`Google Translate API returned status ${response.status}`);
+      throw new Error(`MyMemory API returned status ${response.status}`);
     }
     
     const data = await response.json();
