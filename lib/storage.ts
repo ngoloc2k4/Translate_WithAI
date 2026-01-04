@@ -1,4 +1,4 @@
-import { HistoryEntry } from '../types';
+import { HistoryEntry } from './types';
 import { generateId } from './utils';
 
 const HISTORY_KEY = 'lobie-translate-history';
